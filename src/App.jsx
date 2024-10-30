@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState } from 'react';
 import './App.css';
 import data from './assets/data';
 
@@ -6,25 +6,29 @@ function App() {
   const [count, setCount] = useState(0);
   const [questions, setQuestions] = useState(data[count]);
   const [score, setScrore] = useState(0);
-  const option1 = useRef();
-  const option2 = useRef();
-  const option3 = useRef();
-  const option4 = useRef();
+  const [selectOption , setSelectOption] = useState(false);
 
-  console.log(data.length)
+  const option1 = useRef(null);
+  const option2 = useRef(null);
+  const option3 = useRef(null);
+  const option4 = useRef(null);
 
+  let option_array = [option1,option2,option3,option4];
+   
 
   const handleOnChange = () => {
-    setCount(prev => prev + 1);
+    if(selectOption){
+      setCount(prev => prev + 1);
     setQuestions(data[count + 1]);
-    option1.current.classList.remove('currect');
-    option2.current.classList.remove('currect');
-    option3.current.classList.remove('currect');
-    option4.current.classList.remove('currect');
-    option1.current.classList.remove('wrong');
-    option2.current.classList.remove('wrong');
-    option3.current.classList.remove('wrong');
-    option4.current.classList.remove('wrong');
+    setSelectOption(false)
+    }
+    else{
+      alert("Plaese select one option")
+    }
+    option_array.map((item)=>{
+      item.current.classList.remove('currect');
+      item.current.classList.remove('wrong');
+    });
   }
 
   const handleOnAgain = () => {
@@ -32,36 +36,17 @@ function App() {
     setQuestions(data[0])
   }
 
-  const handleOnCheck = (ansData) => {
+  const handleOnCheck = (e,ansData) => {
+    console.log(e.target)
+    setSelectOption(true);
     if (ansData == questions.ans) {
       setScrore(prev => prev + 1);
-      if (ansData == 1) {
-        option1.current.classList.add('currect');
-      }
-      if (ansData == 2) {
-        option2.current.classList.add('currect');
-      }
-      if (ansData == 3) {
-        option3.current.classList.add('currect');
-      }
-      if (ansData == 4) {
-        option4.current.classList.add('currect');
-      }
-      // option1 .current.classList.add('currect');
+      e.target.classList.add('currect');
     }
     else {
-      if (ansData == 1) {
-        option1.current.classList.add('wrong')
-      }
-      if (ansData == 2) {
-        option2.current.classList.add('wrong')
-      }
-      if (ansData == 3) {
-        option3.current.classList.add('wrong')
-      }
-      if (ansData == 4) {
-        option4.current.classList.add('wrong')
-      }
+      e.target.classList.add('wrong');
+      console.log(option_array[questions.ans-1])
+      option_array[questions.ans-1].current.classList.add('currect');
     }
   }
 
@@ -73,10 +58,10 @@ function App() {
         {questions ?
           <>
             <h2>{count + 1}.{questions.question}</h2>
-            <p ref={option1} onClick={() => handleOnCheck(1)}>{questions.option1}</p>
-            <p ref={option2} onClick={() => handleOnCheck(2)}>{questions.option2}</p>
-            <p ref={option3} onClick={() => handleOnCheck(3)}>{questions.option3}</p>
-            <p ref={option4} onClick={() => handleOnCheck(4)}>{questions.option4}</p>
+            <p ref={option1} onClick={(e) => handleOnCheck(e,1)}>{questions.option1}</p>
+            <p ref={option2} onClick={(e) => handleOnCheck(e,2)}>{questions.option2}</p>
+            <p ref={option3} onClick={(e) => handleOnCheck(e,3)}>{questions.option3}</p>
+            <p ref={option4} onClick={(e) => handleOnCheck(e,4)}>{questions.option4}</p>
 
             <button onClick={handleOnChange}>Next</button>
 
